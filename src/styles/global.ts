@@ -35,5 +35,9 @@ export default createGlobalStyle`
 
   button {
     cursor: pointer;
+    background-color: var(--green);
+    color: #fff;
+    font-weight: bold;
+    border-radius: 4px;
   }
 `
