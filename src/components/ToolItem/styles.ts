@@ -5,6 +5,7 @@ export const Container = styled.div`
   padding: 10px;
   border-radius: 8px;
   border: 1px solid var(--black);
+  margin-bottom: 10px;
 `
 
 export const Head = styled.div`

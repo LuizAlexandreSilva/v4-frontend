@@ -1,20 +1,20 @@
-import React, { ChangeEvent, useCallback, useState } from 'react'
+import React, { ChangeEvent, useCallback, useEffect, useState } from 'react'
 import Input from '../../components/Input'
 
 import { FaSearch, FaPlus } from 'react-icons/fa'
-import { Container, Head, SearchContainer, ToolList } from './styles'
+import {
+  Container,
+  Head,
+  SearchContainer,
+  ToolList,
+  LoadingContainer,
+} from './styles'
 import ToolItem from '../../components/ToolItem'
 import { Tool } from '../../models/tool'
 import ModalAdd from '../../components/ModalAddTool'
 import ModalRemoveTool from '../../components/ModalRemoveTool'
-
-const tools: Tool[] = [
-  {
-    name: 'Notion',
-    description: 'All in one tool',
-    tags: ['organization', 'planning'],
-  },
-]
+import api from '../../services/apiClient'
+import { Form } from '@unform/web'
 
 const Home: React.FC = () => {
   const [modalAddIsOpen, setModalAddIsOpen] = useState(false)
@@ -22,6 +22,22 @@ const Home: React.FC = () => {
   const [selectedTool, setSelectedTool] = useState<Tool>({} as Tool)
   const [searchText, setSearchText] = useState('')
   const [searchByTagsOnly, setSearchByTagsOnly] = useState(false)
+  const [tools, setTools] = useState<Tool[]>([])
+  const [isLoading, setIsLoading] = useState(false)
+
+  const loadTools = useCallback(() => {
+    setIsLoading(true)
+    api
+      .get('/tools')
+      .then((response) => {
+        setTools(response.data)
+      })
+      .finally(() => setIsLoading(false))
+  }, [])
+
+  useEffect(() => {
+    loadTools()
+  }, [loadTools])
 
   const handleSearch = useCallback(() => {
     console.log(searchText, searchByTagsOnly)
@@ -31,24 +47,25 @@ const Home: React.FC = () => {
     setModalAddIsOpen(!modalAddIsOpen)
   }, [modalAddIsOpen])
 
-  const toggleRemoveModal = useCallback(
+  const toggleRemoveModal = useCallback(() => {
+    setModalRemoveIsOpen(!modalRemoveIsOpen)
+  }, [modalRemoveIsOpen])
+
+  const removeTool = useCallback(
     (tool: Tool) => {
       setSelectedTool(tool)
-      setModalRemoveIsOpen(!modalRemoveIsOpen)
+      setModalRemoveIsOpen(true)
     },
-    [modalRemoveIsOpen],
+    [setModalRemoveIsOpen],
   )
 
   const handleRemove = useCallback(
-    (confirm: boolean) => {
+    async (confirm: boolean) => {
+      if (confirm) loadTools()
+
       setModalRemoveIsOpen(false)
-      if (confirm) {
-        console.log(`remover ${selectedTool.name}`)
-      } else {
-        console.log('cancelar')
-      }
     },
-    [selectedTool],
+    [loadTools],
   )
 
   const handleSelectSearchTagsOnly = useCallback(
@@ -64,13 +81,13 @@ const Home: React.FC = () => {
       <ModalAdd
         isOpen={modalAddIsOpen}
         setIsOpen={toggleAddModal}
-        handleSuccess={() => setModalAddIsOpen(false)}
+        handleSuccess={() => loadTools()}
       />
       <ModalRemoveTool
         isOpen={modalRemoveIsOpen}
-        setIsOpen={() => toggleRemoveModal(selectedTool)}
+        setIsOpen={() => toggleRemoveModal()}
         item={selectedTool}
-        handleConfirmation={handleRemove}
+        onAction={handleRemove}
       />
       <h1>VUTTR</h1>
       <h3>Very Useful Tools to Remember</h3>
@@ -78,33 +95,40 @@ const Home: React.FC = () => {
       <main>
         <Head>
           <SearchContainer>
-            <Input
-              name="search"
-              icon={FaSearch}
-              buttonText="Search"
-              handleButtonClick={handleSearch}
-              value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
-            />
-            <input
-              type="checkbox"
-              checked={searchByTagsOnly}
-              onChange={handleSelectSearchTagsOnly}
-            />
-            <label>search in tags only</label>
+            <Form onSubmit={() => {}}>
+              <Input
+                name="test"
+                icon={FaSearch}
+                buttonText="Search"
+                handleButtonClick={handleSearch}
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
+              />
+              <input
+                type="checkbox"
+                checked={searchByTagsOnly}
+                onChange={handleSelectSearchTagsOnly}
+              />
+              <label>search in tags only</label>
+            </Form>
           </SearchContainer>
           <button type="button" onClick={toggleAddModal}>
             <FaPlus />
             Add
           </button>
         </Head>
+        {isLoading && (
+          <LoadingContainer>
+            <strong>Loading...</strong>
+          </LoadingContainer>
+        )}
         <ToolList>
           {tools &&
             tools.map((tool) => (
               <ToolItem
                 key={tool.name}
                 tool={tool}
-                onClick={() => toggleRemoveModal(tool)}
+                handleClickRemove={() => removeTool(tool)}
               />
             ))}
         </ToolList>

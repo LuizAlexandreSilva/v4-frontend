@@ -6,15 +6,17 @@ import { Container, Head, Body } from './styles'
 
 interface ToolProps {
   tool: Tool
-  onClick: Function
+  handleClickRemove: Function
 }
 
-const ToolItem: React.FC<ToolProps> = ({ tool, onClick }) => {
+const ToolItem: React.FC<ToolProps> = ({ tool, handleClickRemove }) => {
   return (
     <Container>
       <Head>
-        <a href="#">{tool.name}</a>
-        <span onClick={() => onClick()}>
+        <a href={tool.link} target="_blank" rel="noreferrer">
+          {tool.name}
+        </a>
+        <span onClick={() => handleClickRemove()}>
           <MdClose />
           remove
         </span>

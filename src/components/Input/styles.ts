@@ -22,6 +22,10 @@ export const Container = styled.div`
     }
   }
 
+  small {
+    color: var(--red);
+  }
+
   svg {
     margin-right: 10px;
   }

@@ -39,5 +39,9 @@ export default createGlobalStyle`
     color: #fff;
     font-weight: bold;
     border-radius: 4px;
+
+    :disabled {
+      background-color: #8D8D8D;
+    }
   }
 `

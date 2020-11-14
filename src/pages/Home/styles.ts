@@ -31,19 +31,28 @@ export const Head = styled.div`
 `
 
 export const SearchContainer = styled.div`
-  display: flex;
-  align-items: center;
+  form {
+    display: flex;
+    align-items: center;
 
-  > input {
-    margin-left: 15px;
-    margin-right: 5px;
-  }
+    > input {
+      margin-left: 15px;
+      margin-right: 5px;
+    }
 
-  > label {
-    width: 100%;
+    label {
+      width: 100%;
+    }
   }
 `
 
 export const ToolList = styled.ul`
   margin-top: 10px;
+`
+
+export const LoadingContainer = styled.div`
+  width: 100%;
+  margin: 20px auto;
+  text-align: center;
+  font-size: 32px;
 `
