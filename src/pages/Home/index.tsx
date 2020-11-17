@@ -119,6 +119,11 @@ const Home: React.FC = () => {
                 icon={FaSearch}
                 buttonText="Search"
                 handleButtonClick={handleSearch}
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter') {
+                    handleSearch()
+                  }
+                }}
                 value={searchText}
                 onChange={(e) => setSearchText(e.target.value)}
               />
