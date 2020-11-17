@@ -1,6 +1,6 @@
 # Very Useful Tools to Remember(VUTTR)
 
-This is a Web application to manage tools using name, link, description and tags.
+This is a frontend web application to manage tools using name, link, description and tags.
 
 ## Tools
 
