@@ -2,7 +2,7 @@ import axios from 'axios'
 import { handleApiError } from '../utils/handleApiError'
 
 const api = axios.create({
-  baseURL: 'http://localhost:3333',
+  baseURL: process.env.REACT_APP_BASE_URL,
 })
 
 api.interceptors.response.use(undefined, (err) => {
