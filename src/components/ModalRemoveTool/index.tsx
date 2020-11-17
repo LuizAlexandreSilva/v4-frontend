@@ -23,7 +23,6 @@ const ModalRemoveTool: React.FC<IModalProps> = ({
 
   const handleConfirmation = useCallback(
     async (confirm: boolean, id?: number) => {
-      console.log(id)
       if (confirm) {
         setIsButtonsDisabled(true)
         await api.delete(`tools/${id}`)

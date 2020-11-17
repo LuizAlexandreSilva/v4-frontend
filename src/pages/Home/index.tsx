@@ -15,6 +15,7 @@ import ModalAdd from '../../components/ModalAddTool'
 import ModalRemoveTool from '../../components/ModalRemoveTool'
 import api from '../../services/apiClient'
 import { Form } from '@unform/web'
+import { toast } from 'react-toastify'
 
 const Home: React.FC = () => {
   const [modalAddIsOpen, setModalAddIsOpen] = useState(false)
@@ -72,6 +73,8 @@ const Home: React.FC = () => {
       setSearchText('')
       if (confirm) loadTools()
 
+      toast.success('Tool removed successfully!')
+
       setModalRemoveIsOpen(false)
     },
     [loadTools],
@@ -85,12 +88,18 @@ const Home: React.FC = () => {
     [],
   )
 
+  const handleAdd = useCallback(() => {
+    loadTools()
+
+    toast.success('Tool added successfully!')
+  }, [loadTools])
+
   return (
     <Container>
       <ModalAdd
         isOpen={modalAddIsOpen}
         setIsOpen={toggleAddModal}
-        handleSuccess={() => loadTools()}
+        handleSuccess={handleAdd}
       />
       <ModalRemoveTool
         isOpen={modalRemoveIsOpen}
