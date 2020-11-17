@@ -25,23 +25,31 @@ const Home: React.FC = () => {
   const [tools, setTools] = useState<Tool[]>([])
   const [isLoading, setIsLoading] = useState(false)
 
-  const loadTools = useCallback(() => {
-    setIsLoading(true)
-    api
-      .get('/tools')
-      .then((response) => {
-        setTools(response.data)
-      })
-      .finally(() => setIsLoading(false))
-  }, [])
+  const loadTools = useCallback(
+    (searchText?: string, searchByTagsOnly?: boolean) => {
+      setIsLoading(true)
+      api
+        .get('/tools', {
+          params: {
+            tag: searchText,
+            tagsOnly: searchByTagsOnly,
+          },
+        })
+        .then((response) => {
+          setTools(response.data)
+        })
+        .finally(() => setIsLoading(false))
+    },
+    [],
+  )
 
   useEffect(() => {
     loadTools()
   }, [loadTools])
 
   const handleSearch = useCallback(() => {
-    console.log(searchText, searchByTagsOnly)
-  }, [searchText, searchByTagsOnly])
+    loadTools(searchText, searchByTagsOnly)
+  }, [loadTools, searchText, searchByTagsOnly])
 
   const toggleAddModal = useCallback(() => {
     setModalAddIsOpen(!modalAddIsOpen)
@@ -61,6 +69,7 @@ const Home: React.FC = () => {
 
   const handleRemove = useCallback(
     async (confirm: boolean) => {
+      setSearchText('')
       if (confirm) loadTools()
 
       setModalRemoveIsOpen(false)
@@ -120,6 +129,11 @@ const Home: React.FC = () => {
         {isLoading && (
           <LoadingContainer>
             <strong>Loading...</strong>
+          </LoadingContainer>
+        )}
+        {!isLoading && !tools.length && (
+          <LoadingContainer>
+            <strong>No data found.</strong>
           </LoadingContainer>
         )}
         <ToolList>
